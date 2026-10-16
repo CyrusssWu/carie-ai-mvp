@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Sprint 4 isolated test controls</title><body>
+<h1>Local synthetic acceptance data only</h1>
+<button id="reset-counters">Reset test counters only</button>
+<button id="fail-render">Trigger test render failure</button><button id="allow-render">Allow test rendering</button><button id="legacy">Add disposable legacy copies</button><button id="migrate">Convert test data to v2</button>
+<button id="reset">Reset test data</button><button id="corrupt">Corrupt test storage</button><button id="restore">Restore test data</button><button id="block">Block test storage writes</button><button id="unblock">Allow test storage writes</button><a href="/">Start app</a><a href="/passport">Open Passport</a>
+<script>
+if(location.hostname==='localhost'&&location.port==='5177'){
+document.querySelector('#reset-counters').onclick=()=>{sessionStorage.removeItem('s4-counters');sessionStorage.removeItem('s7-requests');document.querySelector('h1').textContent='Test counters cleared; experiences preserved';};
+document.querySelector('#reset').onclick=()=>{sessionStorage.clear();localStorage.clear();document.querySelector('h1').textContent='Test data cleared';};
+document.querySelector('#corrupt').onclick=()=>{sessionStorage.setItem('s4-before-corrupt',localStorage.getItem('carie_student_data_v3'));localStorage.setItem('carie_student_data_v3','{broken sprint4 test');};
+document.querySelector('#restore').onclick=()=>{const raw=sessionStorage.getItem('s4-before-corrupt');if(raw){localStorage.setItem('carie_student_data_v3',raw);document.querySelector('h1').textContent='Synthetic experiences restored';}};
+document.querySelector('#block').onclick=()=>{sessionStorage.setItem('s4-block-storage','yes');};
+document.querySelector('#unblock').onclick=()=>{sessionStorage.removeItem('s4-block-storage');};
+document.querySelector('#fail-render').onclick=()=>{sessionStorage.setItem('s5-render-failure','yes');};
+document.querySelector('#allow-render').onclick=()=>{sessionStorage.removeItem('s5-render-failure');};
+document.querySelector('#legacy').onclick=()=>{localStorage.setItem('carie_reflection_v1',JSON.stringify({note:'DISPOSABLE_LEGACY_PRIVATE'}));localStorage.setItem('carie_experiences_v2_recovery_test','DISPOSABLE_BACKUP_PRIVATE');localStorage.setItem('unrelated-test-key','keep');};
+document.querySelector('#migrate').onclick=()=>{const raw=JSON.parse(localStorage.getItem('carie_student_data_v3'));localStorage.setItem('carie_experiences_v2',JSON.stringify(raw.experience));localStorage.setItem('carie_profile_v1',JSON.stringify(raw.profile));localStorage.removeItem('carie_student_data_v3');};
+}
+</script></body></html>
